@@ -103,6 +103,7 @@ blogRouter.get('/bulk', async (c) => {
             content: true,
             title: true,
             id: true,
+            publishedAt: true,
             author: {
                 select: {
                     name: true
@@ -111,8 +112,17 @@ blogRouter.get('/bulk', async (c) => {
         }
     });
 
+    const formattedBlogs = blogs.map(blog => ({
+        ...blog,
+        publishedAt: new Date(blog.publishedAt).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        })
+    }));
+
     return c.json({
-        blogs
+        blogs: formattedBlogs
     })
 })
 
@@ -122,30 +132,41 @@ blogRouter.get('/:id', async (c) => {
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate())
 
-    try {
-        const blog = await prisma.blog.findFirst({
-            where: {
-                id: Number(id)
-            },
-            select: {
-                id: true,
-                title: true,
-                content: true,
-                author: {
-                    select: {
-                        name: true
-                    }
+    const blog = await prisma.blog.findFirst({
+        where: {
+            id: Number(id)
+        },
+        select: {
+            id: true,
+            title: true,
+            content: true,
+            publishedAt: true,
+            author: {
+                select: {
+                    name: true
                 }
             }
-        })
+        }
+    })
 
+    if (!blog) {
+        c.status(404);
         return c.json({
-            blog
-        });
-    } catch (e) {
-        c.status(411); // 4
-        return c.json({
-            message: "Error while fetching blog post"
+            message: "Blog not found"
         });
     }
-})
+
+    // Format the publishedAt date
+    const formattedBlog = {
+        ...blog,
+        publishedAt: new Date(blog.publishedAt).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        })
+    };
+
+    return c.json({
+        blog: formattedBlog
+    });
+});

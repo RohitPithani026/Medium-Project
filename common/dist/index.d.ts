@@ -32,6 +32,22 @@ export declare const createBlogInput: z.ZodObject<{
     title: string;
     content: string;
 }>;
+export declare const updateUserInput: z.ZodObject<{
+    username: z.ZodString;
+    name: z.ZodString;
+    biography: z.ZodString;
+    id: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    username: string;
+    name: string;
+    biography: string;
+    id: number;
+}, {
+    username: string;
+    name: string;
+    biography: string;
+    id: number;
+}>;
 export declare const updateBlogInput: z.ZodObject<{
     title: z.ZodString;
     content: z.ZodString;
@@ -48,4 +64,5 @@ export declare const updateBlogInput: z.ZodObject<{
 export type Signupinput = z.infer<typeof signupInput>;
 export type Signininput = z.infer<typeof signinInput>;
 export type CreateBlogInput = z.infer<typeof createBlogInput>;
+export type updateUserInput = z.infer<typeof updateUserInput>;
 export type updateBlogInput = z.infer<typeof updateBlogInput>;

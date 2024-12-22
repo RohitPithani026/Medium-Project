@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
 import { sign } from 'hono/jwt'
-import { signupInput, signinInput } from "@rohit026/medium-common";
+import { signupInput, signinInput, updateUserInput } from "@rohit026/medium-common";
 
 export const userRouter = new Hono<{
     Bindings: {
@@ -36,7 +36,10 @@ userRouter.post('/signup', async (c) => {
             id: user.id
         }, c.env.JWT_SECRET);
 
-        return c.text(jwt)
+        return c.json({
+            id: user.id,
+            jwt: jwt
+        })
     } catch (e) {
         console.log(e);
         c.status(411);
@@ -76,10 +79,99 @@ userRouter.post('/signin', async (c) => {
             id: user.id
         }, c.env.JWT_SECRET);
 
-        return c.text(jwt)
+        return c.json({
+            id: user.id,
+            jwt
+        })
     } catch (e) {
         console.log(e);
         c.status(411);
         return c.text('Invalid')
     }
 })
+
+userRouter.put('/', async (c) => {
+    const body = await c.req.json();
+    const { success } = updateUserInput.safeParse(body);
+
+    if (!success) {
+        c.status(400); 
+        return c.json({
+            message: "Invalid input format",
+        });
+    }
+
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    try {
+        const user = await prisma.user.update({
+            where: { 
+                id: body.id
+            },
+            data: {
+                name: body.name,
+                password: body.password, 
+            },
+        });
+
+        return c.json({
+            message: "User profile updated successfully",
+            user,
+        });
+    } catch (e) {
+        console.error(e);
+        c.status(500); 
+        return c.json({ message: "An error occurred while updating the profile" });
+    }
+});
+
+
+userRouter.get('/users', async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate())
+    const users = await prisma.user.findMany({
+        select: {
+            name: true,
+            username: true,
+            biography: true,
+            id: true,
+        }
+    });
+
+    return c.json({
+        users
+    })
+})
+
+userRouter.get('/:id', async (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const userId = c.req.param("id");
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: Number(userId) },
+        });
+
+        if (!user) {
+            c.status(404);
+            return c.json({ message: "User not found" });
+        }
+
+        return c.json({
+            id: user.id,
+            name: user.name,
+            username: user.username,
+            biography: user.biography,
+        });
+    } catch (error) {
+        console.error(error);
+        c.status(500);
+        return c.json({ message: "Internal Server Error" });
+    }
+});

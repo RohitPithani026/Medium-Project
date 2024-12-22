@@ -3,7 +3,7 @@ import z from "zod";
 export const signupInput = z.object({
     username: z.string().email(),
     password: z.string().min(6),
-    name: z.string().optional()
+    name: z.string().optional(),
 })
 
 export const signinInput = z.object({
@@ -16,6 +16,13 @@ export const createBlogInput = z.object({
     content: z.string(),
 })
 
+export const updateUserInput = z.object({
+    username: z.string(),
+    name: z.string(),
+    biography: z.string(),
+    id: z.number()
+})
+
 export const updateBlogInput = z.object({
     title: z.string(),
     content: z.string(),
@@ -25,4 +32,5 @@ export const updateBlogInput = z.object({
 export type Signupinput = z.infer<typeof signupInput>
 export type Signininput = z.infer<typeof signinInput>
 export type CreateBlogInput = z.infer<typeof createBlogInput>
+export type updateUserInput = z.infer<typeof updateUserInput>
 export type updateBlogInput = z.infer<typeof updateBlogInput>

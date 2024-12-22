@@ -6,7 +6,8 @@ import { BACKEND_URL } from "../config";
 export interface Blog {
     "content": string;
     "title": string;
-    "id": number
+    "id": number;
+    "publishedAt": string;
     "author": {
         "name": string
     }
@@ -32,8 +33,8 @@ export const useBlog = ({ id }: { id: string }) => {
         loading,
         blog
     }
-
 }
+
 export const useBlogs = () => {
     const [loading, setLoading] = useState(true);
     const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -53,5 +54,34 @@ export const useBlogs = () => {
     return {
         loading,
         blogs
+    }
+}
+
+export interface User {
+    "name"?: string;
+    "username"?: string;
+    "biography"?: string;
+    "id": number;
+}
+
+export const useUser = ({ id }: { id: string }) => {
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        axios.get(`${BACKEND_URL}/api/v1/user/${id}`, {
+            headers: {
+                Authorization: localStorage.getItem("token"),
+            }
+        })
+            .then(response => {
+                setUser(response.data.user);
+                setLoading(false);
+            })
+    }, [id])
+
+    return {
+        loading,
+        user
     }
 }
