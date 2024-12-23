@@ -4,7 +4,6 @@ import axios from 'axios';
 export const Quote = () => {
     const [quote, setQuote] = useState<string | null>(null); 
     const [author, setAuthor] = useState<string>("");  
-    const [company, setCompany] = useState<string>(""); 
 
     const fetchQuote = async () => {
         try {
@@ -15,8 +14,6 @@ export const Quote = () => {
                 const randomQuote = data.quotes[Math.floor(Math.random() * data.quotes.length)];
                 setQuote(randomQuote.quote);  
                 setAuthor(randomQuote.author);  
-
-                setCompany(randomQuote.tags && randomQuote.tags.length > 0 ? randomQuote.tags[0] : "Company Name");
             } else {
                 console.error('No quotes found');
             }
