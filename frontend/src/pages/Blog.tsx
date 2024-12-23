@@ -2,18 +2,18 @@ import { Toaster } from "../components/sonner";
 import { Appbar } from "../components/Appbar";
 import { FullBlog } from "../components/FullBlog";
 import { Spinner } from "../components/Spinner";
-import { useBlog } from "../hooks";
+import { useBlog } from "../hook";
 import {useParams} from "react-router-dom";
 import { toast } from "sonner";
 
 
 export const Blog = () => {
     const { id } = useParams();
-    const {loading, blog} = useBlog({
+    const {loading, blogg} = useBlog({
         id: id || ""
     });
 
-    if (loading || !blog) {
+    if (loading || !blogg) {
         toast("Blog is loading...");
         return (
             <div>
@@ -29,6 +29,6 @@ export const Blog = () => {
     toast("Blog loaded successfully!");
     return <div>
         <Toaster />
-        <FullBlog blog={blog} />
+        <FullBlog blog={blogg} />
     </div>
 }

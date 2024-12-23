@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react"
 import axios from "axios";
 import { BACKEND_URL } from "../config";
-
-
 export interface Blog {
     "content": string;
     "title": string;
     "id": number;
     "publishedAt": string;
     "author": {
-        "name": string
+        "name": string;
+        "biography": string
     }
 }
 
 export const useBlog = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(true);
-    const [blog, setBlog] = useState<Blog>();
+    const [blogg, setBlog] = useState<Blog>();
 
     useEffect(() => {
         axios.get(`${BACKEND_URL}/api/v1/blog/${id}`, {
@@ -31,7 +30,7 @@ export const useBlog = ({ id }: { id: string }) => {
 
     return {
         loading,
-        blog
+        blogg
     }
 }
 
@@ -85,3 +84,22 @@ export const useUser = ({ id }: { id: string }) => {
         user
     }
 }
+
+export type UpdateUser = {
+    "name"?: string;
+    "username"?: string;
+    "biography"?: string;
+    "password"?: string;
+};
+
+export const useUserUpdate = ({ id }: { id: string }) => {
+    const updateUser = (updateData: UpdateUser) => {
+        return axios.put(`${BACKEND_URL}/api/v1/user/${id}`, updateData, {
+            headers: {
+                Authorization: localStorage.getItem("token") || "",
+            },
+        });
+    };
+
+    return { updateUser };
+};

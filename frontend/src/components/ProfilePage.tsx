@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { Button } from "../components/button";
-import { Card, CardContent, CardHeader } from "../components/card";
-import { Label } from "../components/label";
-import { Input } from "../components/input";
-import { Textarea } from "../components/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/avatar";
-import { User } from "../hooks";
+import { Button } from "./button";
+import { Card, CardContent, CardHeader } from "./card";
+import { Label } from "./label";
+import { Input } from "./input";
+import { Textarea } from "./textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { User, useUserUpdate } from "../hook";
+import { useToast } from "../hooks/use-toast"
+import { ToastAction } from "../components/toast"
+import { Toaster } from "../components/toaster"
 
-export default function ProfilePage( {user}: {user: User} ) {
+export default function ProfilePage({ user }: { user: User }) {
     // State for profile fields
     const [usersname, setusersname] = useState(user.name || "Anonymous");
     const [email, setEmail] = useState(user.username);
@@ -24,35 +27,89 @@ export default function ProfilePage( {user}: {user: User} ) {
     // Validation errors state
     const [error, setError] = useState<string | null>(null);
 
+    // Hook for user update
+    const id = localStorage.getItem("id");
+    const { updateUser } = useUserUpdate({ id: id || "" });
+
     // Toggle between view and edit mode
     const handleEditToggle = () => setIsEditing(!isEditing);
 
+    const { toast } = useToast()
+
     // Save changes
-    const handleSaveChanges = () => {
-        setIsEditing(false);
-        alert("Profile updated successfully!");
+    const handleSaveChanges = async () => {
+        try {
+            await updateUser({
+                name: usersname,
+                biography: bio,
+                username: email,
+            });
+            setIsEditing(false);
+            toast({
+                description: "Profile updated successfully!",
+                duration: 3000,
+            })
+        } catch (e) {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "Failed to update the profile!",
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+                duration: 3000,
+            })
+        }
     };
 
     // Update password handler
-    const handlePasswordSave = () => {
+    const handlePasswordSave = async () => {
         if (!newPassword || newPassword !== confirmPassword) {
-            setError("Passwords do not match!");
+            toast({
+                description: "Password doesn't match",
+                duration: 3000,
+            })
             return;
         }
-        alert("Password updated successfully!");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-        setError(null);
+
+        try {
+            await updateUser({ password: newPassword });
+            toast({
+                title: "Password Updated Successfully!",
+                description: "Your password has been updated successfully",
+                action: <ToastAction altText="OK">OK</ToastAction>,
+                duration: 3000,
+            })
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+            setError(null);
+        } catch (e) {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "Failed to update the password!",
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+                duration: 3000,
+            })
+        }
     };
+
+    const getInitials = (name: string): string => {
+        return name
+            .split(" ")
+            .map((part) => part[0])
+            .join("")
+            .toUpperCase();
+    };
+
+    const initials = getInitials(usersname);
 
     return (
         <div className="p-6 space-y-8 max-w-xl mx-auto">
             {/* Profile Header */}
             <header className="text-center space-y-4">
-                <Avatar className="h-24 w-24 mx-auto">
+                <Avatar className="h-20 w-20 mx-auto">
                     <AvatarImage src="/avatars/01.png" alt="Profile picture" />
-                    <AvatarFallback>MR</AvatarFallback>
+                    <AvatarFallback className="text-2xl font-semibold">{initials}</AvatarFallback>
                 </Avatar>
                 <h1 className="text-3xl font-bold">{usersname}</h1>
             </header>
@@ -174,6 +231,7 @@ export default function ProfilePage( {user}: {user: User} ) {
                             className="border-gray-300 focus:ring focus:ring-blue-200"
                         />
                     </div>
+
                     <Button
                         onClick={handlePasswordSave}
                         className="bg-green-600 text-white hover:bg-green-700 transition-all"
@@ -183,6 +241,8 @@ export default function ProfilePage( {user}: {user: User} ) {
                     {error && <p className="text-red-600">{error}</p>}
                 </CardContent>
             </Card>
+
+            <Toaster />
         </div>
     );
 }

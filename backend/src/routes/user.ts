@@ -90,7 +90,8 @@ userRouter.post('/signin', async (c) => {
     }
 })
 
-userRouter.put('/', async (c) => {
+userRouter.put('/:id', async (c) => {
+    const id = c.req.param("id");
     const body = await c.req.json();
     const { success } = updateUserInput.safeParse(body);
 
@@ -108,11 +109,13 @@ userRouter.put('/', async (c) => {
     try {
         const user = await prisma.user.update({
             where: { 
-                id: body.id
+                id: Number(id)
             },
             data: {
                 name: body.name,
-                password: body.password, 
+                password: body.password,
+                biography: body.biography,
+                username: body.username
             },
         });
 
@@ -155,8 +158,17 @@ userRouter.get('/:id', async (c) => {
 
     try {
         const user = await prisma.user.findUnique({
-            where: { id: Number(userId) },
-        });
+            where: { 
+                id: Number(userId)
+            },
+            select: {
+                id: true,
+                name: true,
+                username: true,
+                biography: true,
+            }
+        },
+    );
 
         if (!user) {
             c.status(404);
@@ -164,10 +176,7 @@ userRouter.get('/:id', async (c) => {
         }
 
         return c.json({
-            id: user.id,
-            name: user.name,
-            username: user.username,
-            biography: user.biography,
+            user
         });
     } catch (error) {
         console.error(error);

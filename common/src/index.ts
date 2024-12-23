@@ -17,11 +17,11 @@ export const createBlogInput = z.object({
 })
 
 export const updateUserInput = z.object({
-    username: z.string(),
-    name: z.string(),
-    biography: z.string(),
-    id: z.number()
-})
+    username: z.string().optional(), 
+    name: z.string().optional(),
+    biography: z.string().optional(),
+    password: z.string().optional(),
+});
 
 export const updateBlogInput = z.object({
     title: z.string(),

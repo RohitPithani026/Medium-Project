@@ -33,20 +33,20 @@ export declare const createBlogInput: z.ZodObject<{
     content: string;
 }>;
 export declare const updateUserInput: z.ZodObject<{
-    username: z.ZodString;
-    name: z.ZodString;
-    biography: z.ZodString;
-    id: z.ZodNumber;
+    username: z.ZodOptional<z.ZodString>;
+    name: z.ZodOptional<z.ZodString>;
+    biography: z.ZodOptional<z.ZodString>;
+    password: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    username: string;
-    name: string;
-    biography: string;
-    id: number;
+    username?: string | undefined;
+    password?: string | undefined;
+    name?: string | undefined;
+    biography?: string | undefined;
 }, {
-    username: string;
-    name: string;
-    biography: string;
-    id: number;
+    username?: string | undefined;
+    password?: string | undefined;
+    name?: string | undefined;
+    biography?: string | undefined;
 }>;
 export declare const updateBlogInput: z.ZodObject<{
     title: z.ZodString;

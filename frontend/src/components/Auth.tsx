@@ -21,7 +21,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             localStorage.setItem("id", id)
             navigate("/blogs");
         } catch(e) {
-            alert("Error while signing up")
+            alert(`Error during ${type === "signup" ? "sign-up" : "sign-in"}. Please try again later.`)
             // alert the user here that the request failed
         }
     }

@@ -19,10 +19,10 @@ exports.createBlogInput = zod_1.default.object({
     content: zod_1.default.string(),
 });
 exports.updateUserInput = zod_1.default.object({
-    username: zod_1.default.string(),
-    name: zod_1.default.string(),
-    biography: zod_1.default.string(),
-    id: zod_1.default.number()
+    username: zod_1.default.string().optional(),
+    name: zod_1.default.string().optional(),
+    biography: zod_1.default.string().optional(),
+    password: zod_1.default.string().optional(),
 });
 exports.updateBlogInput = zod_1.default.object({
     title: zod_1.default.string(),

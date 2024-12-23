@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom"; 
-import ProfilePage from "../pages/ProfilePage"; 
-import { useUser } from "../hooks"; 
+import ProfilePage from "./ProfilePage"; 
+import { useUser } from "../hook"; 
+import { ProfilePageSkeleton } from "./ProfileSkeleton";
 
 export default function User() {
     const { id } = useParams();
     const { user } = useUser({ id: id || "" }); 
 
     if (!user) {
-        return <div>Loading...</div>; 
+        return <ProfilePageSkeleton />; 
     }
 
     return (

@@ -23,6 +23,9 @@ export const BlogSkeleton = () => {
             <div className="text-slate-500 text-sm font-thin pt-4">
                 <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
             </div>
+            <div className="text-slate-500 text-sm font-thin pt-4">
+                <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
+            </div>
         </div>
     <span className="sr-only">Loading...</span>
 </div>
