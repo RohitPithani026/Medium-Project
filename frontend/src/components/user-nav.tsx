@@ -12,20 +12,25 @@ import {
 } from "./dropdown-menu";
 import { useUser } from "../hook";
 
+function Logout() {
+    localStorage.removeItem("id");
+    localStorage.removeItem("token");
+}
+
 export default function UserNav() {
     const id = localStorage.getItem("id");
     const { user } = useUser({ id: id || "" });
 
-    if(!user) {
+    if (!user) {
         return;
     }
 
     const getInitials = (name: string): string => {
         return name
-            .split(" ") 
-            .map((part) => part[0]) 
-            .join("") 
-            .toUpperCase(); 
+            .split(" ")
+            .map((part) => part[0])
+            .join("")
+            .toUpperCase();
     };
 
     const initials = user.name ? getInitials(user.name) : "A";
@@ -54,8 +59,14 @@ export default function UserNav() {
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                    Log out
+                <DropdownMenuGroup>
+                    <DropdownMenuItem>
+                        <Link to={`/userBlogs/${id}`}>Your Blogs</Link>
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={Logout}>
+                    <Link to={"/signin"}>Log out</Link>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

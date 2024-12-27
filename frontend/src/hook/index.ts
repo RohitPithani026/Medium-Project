@@ -56,6 +56,41 @@ export const useBlogs = () => {
     }
 }
 
+export interface userBlog {
+    "id": number;
+    "title": string;
+    "content": string;
+    "publishedAt": string;
+    "author": {
+        "name": string;
+        "biography": string
+    }
+}
+
+
+export const useUserBlogs = ({ userId }: { userId: string }) => {
+    const [loading, setLoading] = useState(true);
+    const [userBlog, setUserBlog] = useState<userBlog[]>([]);
+
+    useEffect(() => {
+        axios.get(`${BACKEND_URL}/api/v1/blog/userBlog/${userId}`, {
+            headers: {
+                Authorization: localStorage.getItem("token")
+            }
+        })
+            .then(response => {
+                setUserBlog(response.data.userBlogs);
+                setLoading(false);
+            })
+    }, [userId])
+
+    return {
+        loading,
+        userBlog,
+        setUserBlog
+    }
+}
+
 export interface User {
     "name"?: string;
     "username"?: string;
@@ -102,4 +137,28 @@ export const useUserUpdate = ({ id }: { id: string }) => {
     };
 
     return { updateUser };
+};
+
+export const useBlogDelete = ({ id }: { id: string }) => {
+    const deleteBlog = () => {
+        return axios.delete(`${BACKEND_URL}/api/v1/blog/deleteBlog/${id}`, {
+            headers: {
+                Authorization: localStorage.getItem("token") || "",
+            },
+        });
+    };
+
+    return { deleteBlog };
+};
+
+export const useBlogUpdate = ({ id }: { id: string }) => {
+    const updateBlog = (updateData: Partial<Blog>) => {
+        return axios.put(`${BACKEND_URL}/api/v1/blog/updateBlog/${id}`, updateData, {
+            headers: {
+                Authorization: localStorage.getItem("token") || "",
+            },
+        });
+    };
+
+    return { updateBlog };
 };
