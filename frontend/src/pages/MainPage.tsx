@@ -37,7 +37,7 @@ export function MainPage() {
                 </button>
                 <button className="w-40 h-10 rounded-xl bg-white text-black border border-black text-sm">
                     <Link to={"/signup"}>
-                        Sign Up
+                        Register
                     </Link>
                 </button>
             </div>
