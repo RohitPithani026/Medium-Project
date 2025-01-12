@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Toaster } from "../components/sonner";
 import { Appbar } from "../components/Appbar";
-import { Spinner } from "../components/Spinner";
+import { UserBlogSkeleton } from '../components/UserBlogsSkeleton';
 import { useUserBlogs, useBlogDelete, useBlogUpdate } from "../hook";
 import { toast } from "sonner";
 import { UserBlogCard } from "@/components/UserBlogCard";
@@ -61,7 +61,8 @@ export const UserBlogsPage = () => {
                 <Appbar />
                 <div className="h-screen flex items-center justify-center">
                     <div className="flex justify-center">
-                        <Spinner />
+                        {/* <Spinner /> */}
+                        <UserBlogSkeleton />
                     </div>
                 </div>
             </div>

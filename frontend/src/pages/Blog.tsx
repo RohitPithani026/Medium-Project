@@ -1,10 +1,11 @@
 import { Toaster } from "../components/sonner";
 import { Appbar } from "../components/Appbar";
 import { FullBlog } from "../components/FullBlog";
-import { Spinner } from "../components/Spinner";
+//import { Spinner } from "../components/Spinner";
 import { useBlog } from "../hook";
 import {useParams} from "react-router-dom";
 import { toast } from "sonner";
+import { FullBlogSkeleton } from "@/components/FullBlogSkeleton";
 
 
 export const Blog = () => {
@@ -20,7 +21,8 @@ export const Blog = () => {
                 <Appbar />
                 <div className="h-screen flex flex-col justify-center">
                     <div className="flex justify-center">
-                        <Spinner />
+                        {/* <Spinner /> */}
+                        <FullBlogSkeleton />
                     </div>
                 </div>
             </div>
