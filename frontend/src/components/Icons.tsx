@@ -60,24 +60,3 @@ export const TwitterIcon: FC<IconProps> = ({ size, fill, className, onClick }) =
         </div>
     );
 };
-
-export const DiscordIcon: FC<IconProps> = ({ size, fill, className }) => {
-    return (
-        <div className={className} id="discord-container">
-            <svg width={size} height={size} xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 72 72" viewBox="0 0 72 72" id="discord">
-                <switch>
-                    <g>
-                        <path
-                            fill={fill}
-                            id="discord-path"
-                            d="M52,38c0,3.3-2.7,6-6,6s-6-2.7-6-6s2.7-6,6-6S52,34.7,52,38z M26,44c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6
-                            S29.3,44,26,44z M59,18c-4.3-2.3-10.7-4-15-4l-0.7,0.7c4.6,0.9,9.4,2.9,12.7,5.3c-11.3-5.1-28.7-5.1-40,0
-                            c3.3-2.4,8.1-4.3,12.7-5.3L28,14c-4.3,0-10.7,1.7-15,4c-5.2,8.9-8.9,20.3-9,32c3.6,3.2,8.9,6.3,16,8l4-4c-4.2-1.5-7.3-3.2-10-6
-                            c12.7,8.9,31.3,8.9,44,0c-2.7,2.8-5.8,4.5-10,6l4,4c7.1-1.7,12.4-4.8,16-8C67.9,38.3,64.2,26.9,59,18z"
-                        />
-                    </g>
-                </switch>
-            </svg>
-        </div>
-    );
-};

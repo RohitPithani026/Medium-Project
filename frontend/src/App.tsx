@@ -7,7 +7,7 @@ import { Blogs } from "./pages/Blogs";
 import { Publish } from './pages/Publish';
 import { UserBlogsPage } from './pages/UserBlogsPage'
 import User from './components/User';
-
+import RouteGuard from './components/RouteGuard';
 
 function App() {
 
@@ -18,12 +18,11 @@ function App() {
           <Route path='/' element={<MainPage />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<Signin />} />
-          <Route path="/blog/:id" element={<Blog />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/publish" element={<Publish />} />
-          <Route path='/profile/:id' element={<User />} />
-          <Route path='/userBlogs/:userId' element={<UserBlogsPage />} />
+          <Route path="/blog/:id" element={<RouteGuard><Blog /></RouteGuard>} />
+          <Route path="/blogs" element={<RouteGuard><Blogs /></RouteGuard>} />
+          <Route path="/publish" element={<RouteGuard><Publish /></RouteGuard>} />
+          <Route path='/profile/:id' element={<RouteGuard><User /></RouteGuard>} />
+          <Route path='/userBlogs/:userId' element={<RouteGuard><UserBlogsPage /></RouteGuard>} />
         </Routes>
       </BrowserRouter>
     </>
