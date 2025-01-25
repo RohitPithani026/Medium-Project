@@ -2,7 +2,7 @@ import { Button } from "../components/button";
 import { TypewriterEffectSmooth } from "../components/typewriter-effect"; 
 import { ArrowRight, Edit3, Share2, Users } from "lucide-react";
 import { Link } from "react-router-dom";
-import { DiscordIcon, GitHubIcon, LinkDinIcon, TwitterIcon } from "../components/Icons";
+import { GitHubIcon, LinkDinIcon, TwitterIcon } from "../components/Icons";
 import { RevealButtons } from "../components/RevealButton";
 
 
