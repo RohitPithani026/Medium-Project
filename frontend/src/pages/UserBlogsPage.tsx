@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Toaster } from "../components/sonner";
 import { Appbar } from "../components/Appbar";
 import { UserBlogSkeleton } from '../components/UserBlogsSkeleton';
 import { useUserBlogs, useBlogDelete, useBlogUpdate } from "../hook";
-import { toast } from "sonner";
+import { toast, ToastContainer } from "react-toastify";
 import { UserBlogCard } from "@/components/UserBlogCard";
 import { Link } from "react-router-dom";
 
@@ -47,7 +46,7 @@ export const UserBlogsPage = () => {
                     blog.id === editingBlog.id ? { ...blog, ...updatedData } : blog
                 )
             );
-            setEditingBlog(null); 
+            setEditingBlog(null);
         } catch (error) {
             toast.error(`Failed to update blog with ID: ${editingBlog.id}`);
             console.error(error);
@@ -55,7 +54,6 @@ export const UserBlogsPage = () => {
     };
 
     if (loading || !userBlog) {
-        toast("Blog is loading...");
         return (
             <div>
                 <Appbar />
@@ -88,7 +86,18 @@ export const UserBlogsPage = () => {
                         </div>
                     ) : (
                         <div className="flex justify-center">
-                            <Toaster />
+                            <ToastContainer
+                                position="top-right"
+                                autoClose={3000}
+                                hideProgressBar={false}
+                                newestOnTop={false}
+                                closeOnClick
+                                rtl={false}
+                                pauseOnFocusLoss
+                                draggable
+                                pauseOnHover
+                                theme="light"
+                            />
                             <div>
                                 {userBlog.map((blog) => (
                                     <div key={blog.id} className="mb-4">

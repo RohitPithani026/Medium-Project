@@ -1,27 +1,23 @@
-import { Toaster } from "../components/sonner";
 import { Appbar } from "../components/Appbar";
 import { FullBlog } from "../components/FullBlog";
 import { useBlog } from "../hook";
 import { useParams } from "react-router-dom";
-import { toast } from "sonner";
+import { toast, ToastContainer } from "react-toastify";
 import { FullBlogSkeleton } from "@/components/FullBlogSkeleton";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
 
 export const Blog = () => {
     const { id } = useParams();
     const { loading, blogg } = useBlog({ id: id || "" });
-    const [toastShown, setToastShown] = useState(false);
 
     useEffect(() => {
-        if (!loading && blogg && !toastShown) {
-            // Trigger the toast when loading finishes and blog is available
-            toast("Blog loaded successfully!");
-            setToastShown(true);
+        if (blogg) {
+            toast.success("Blog loaded successfully!");
         }
-    }, [loading, blogg, toastShown]); // Re-run when these dependencies change
+    }, [blogg]);
 
     if (loading || !blogg) {
-        toast("Blog is loading...");
         return (
             <div>
                 <Appbar />
@@ -36,7 +32,18 @@ export const Blog = () => {
 
     return (
         <div>
-            <Toaster />
+            <ToastContainer
+                position="bottom-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <FullBlog blog={blogg} />
         </div>
     );

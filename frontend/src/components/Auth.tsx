@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Signupinput } from "@rohit026/medium-common";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { toast, ToastContainer } from "react-toastify";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             localStorage.setItem("id", id);
             navigate("/blogs");
         } catch (e) {
-            alert(`Error during ${type === "signup" ? "sign-up" : "sign-in"}. Please try again later.`);
+            toast.error(`Error during ${type === "signup" ? "sign-up" : "sign-in"}. Please try again later.`);
         }
     }
 
@@ -92,6 +93,19 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                     </div>
                 </div>
             </div>
+
+            <ToastContainer
+                position="bottom-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </div>
     );
 };
