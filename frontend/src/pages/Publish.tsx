@@ -1,102 +1,102 @@
-"use client";
+import { useState } from "react"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import { Appbar } from "@/components/Appbar"
+import { BACKEND_URL } from "@/config"
+import { TextEditor } from "@/components/TextEditor"
+import { Button } from "@/components/button"
+import { Input } from "@/components/input"
+import { Card, CardContent } from "@/components/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/tabs"
+import { Loader2 } from "lucide-react"
 
-import { useState } from "react";
-import axios from "axios";
-import { Appbar } from "../components/Appbar";
-import { BACKEND_URL } from "../config";
-import { useNavigate } from "react-router-dom";
-import { TextEditor } from "@/components/TextEditor";
-
-export const Publish: React.FC = () => {
-    const [title, setTitle] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
-    const [isPublishing, setIsPublishing] = useState<boolean>(false);
-    const router = useNavigate();
+export const Publish = () => {
+    const [title, setTitle] = useState<string>("")
+    const [content, setContent] = useState<string>("")
+    const [isPublishing, setIsPublishing] = useState<boolean>(false)
+    const router = useNavigate()
 
     const handlePublish = async () => {
-        setIsPublishing(true);
+        setIsPublishing(true)
         try {
             const response = await axios.post<{ id: string }>(
                 `${BACKEND_URL}/api/v1/blog`,
-                {
-                    title,
-                    content: description,
-                },
+                { title, content },
                 {
                     headers: {
                         Authorization: localStorage.getItem("token") || "",
                     },
-                }
-            );
-            router(`/blog/${response.data.id}`);
+                },
+            )
+            router(`/blog/${response.data.id}`)
         } catch (error) {
-            console.error("Failed to publish:", error);
+            console.error("Failed to publish:", error)
         } finally {
-            setIsPublishing(false);
+            setIsPublishing(false)
         }
-    };
+    }
+
+    const wordCount = content.trim().split(/\s+/).length
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-gray-50 to-blue-50 flex flex-col">
             <Appbar />
-            <div className="flex justify-center items-center flex-1">
-                <div className="max-w-3xl w-full bg-white shadow-xl rounded-lg p-8">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create a New Blog Post</h2>
-                    <div className="mb-6">
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-                            Title
-                        </label>
-                        <input
-                            id="title"
-                            type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            className="block w-full px-4 py-3 rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
-                            placeholder="Enter your title here..."
-                            maxLength={100}
-                        />
-                        <p className="mt-2 text-sm text-gray-500 text-right">{title.length}/100 characters</p>
-                    </div>
-
-                    <TextEditor onChange={(value: string) => setDescription(value)} />
-
-                    <div className="mt-6 flex justify-end">
-                        <button
-                            onClick={handlePublish}
-                            disabled={isPublishing || !title || !description}
-                            className={`inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out ${isPublishing ? "opacity-50 cursor-not-allowed" : ""}`}
-                        >
+            <div className="flex-1 flex">
+                <aside className="w-64 bg-white shadow-md p-6 hidden lg:block">
+                    <h2 className="text-xl font-semibold mb-4">Blog Post Details</h2>
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                                Title
+                            </label>
+                            <Input
+                                id="title"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                                placeholder="Enter your title here..."
+                                maxLength={100}
+                            />
+                            <p className="mt-1 text-sm text-gray-500 text-right">{title.length}/100 characters</p>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-gray-700 mb-1">Word Count</p>
+                            <p className="text-2xl font-bold text-blue-600">{wordCount}</p>
+                        </div>
+                        <Button onClick={handlePublish} disabled={isPublishing || !title || !content} className="w-full">
                             {isPublishing ? (
                                 <>
-                                    <svg
-                                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <circle
-                                            className="opacity-25"
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            stroke="currentColor"
-                                            strokeWidth="4"
-                                        ></circle>
-                                        <path
-                                            className="opacity-75"
-                                            fill="currentColor"
-                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                        ></path>
-                                    </svg>
-                                    Publishing...
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Publishing
                                 </>
                             ) : (
                                 "Publish post"
                             )}
-                        </button>
+                        </Button>
                     </div>
-                </div>
+                </aside>
+                <main className="flex-1 p-6">
+                    <Card className="max-w-4xl mx-auto">
+                        <Tabs defaultValue="edit" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="edit">Edit</TabsTrigger>
+                                <TabsTrigger value="preview">Preview</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="edit">
+                                <CardContent className="p-6">
+                                    <TextEditor value={content} onChange={setContent} />
+                                </CardContent>
+                            </TabsContent>
+                            <TabsContent value="preview">
+                                <CardContent className="p-6">
+                                    <h1 className="text-3xl font-bold mb-4">{title}</h1>
+                                    <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
+                                </CardContent>
+                            </TabsContent>
+                        </Tabs>
+                    </Card>
+                </main>
             </div>
         </div>
-    );
-};
+    )
+}
+

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Appbar } from "../components/Appbar";
 import { UserBlogSkeleton } from '../components/UserBlogsSkeleton';
-import { useUserBlogs, useBlogDelete, useBlogUpdate } from "../hook";
+import { useUserBlogs, useBlogDelete, useBlogUpdate } from "../hook/index";
 import { toast, ToastContainer } from "react-toastify";
 import { UserBlogCard } from "@/components/UserBlogCard";
+import { UpdateBlogModal } from "@/components/UpdateBlogModal"; // ✅ Import modal
 import { Link } from "react-router-dom";
 
 export const UserBlogsPage = () => {
@@ -11,8 +12,6 @@ export const UserBlogsPage = () => {
     const { loading, userBlog, setUserBlog } = useUserBlogs({ userId: userId || "" });
 
     const [editingBlog, setEditingBlog] = useState<{ id: number, title: string, content: string } | null>(null);
-    const [newTitle, setNewTitle] = useState<string>('');
-    const [newContent, setNewContent] = useState<string>('');
 
     const handleDelete = async (id: number) => {
         try {
@@ -26,27 +25,22 @@ export const UserBlogsPage = () => {
         }
     };
 
-    const handleUpdateClick = (blog: { id: number, title: string, content: string }) => {
-        setEditingBlog(blog);
-        setNewTitle(blog.title);
-        setNewContent(blog.content);
-    };
-
-    const handleUpdateSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleUpdateSubmit = async (updatedData: { title: string; content: string }) => {
         if (!editingBlog) return;
 
-        const updatedData = { title: newTitle, content: newContent };
         try {
             const { updateBlog } = useBlogUpdate({ id: editingBlog.id.toString() });
             await updateBlog(updatedData);
             toast.success(`Successfully updated blog with ID: ${editingBlog.id}`);
+
+            // Update UI
             setUserBlog((prevBlogs) =>
                 prevBlogs.map((blog) =>
                     blog.id === editingBlog.id ? { ...blog, ...updatedData } : blog
                 )
             );
-            setEditingBlog(null);
+
+            setEditingBlog(null); // Close modal
         } catch (error) {
             toast.error(`Failed to update blog with ID: ${editingBlog.id}`);
             console.error(error);
@@ -58,10 +52,7 @@ export const UserBlogsPage = () => {
             <div>
                 <Appbar />
                 <div className="h-screen flex items-center justify-center">
-                    <div className="flex justify-center">
-                        {/* <Spinner /> */}
-                        <UserBlogSkeleton />
-                    </div>
+                    <UserBlogSkeleton />
                 </div>
             </div>
         );
@@ -78,7 +69,7 @@ export const UserBlogsPage = () => {
                             <p className="mt-2 text-gray-500">It looks like you haven't posted any blogs yet. Start sharing your ideas now!</p>
                             <Link to={"/publish"}>
                                 <button
-                                    className="mt-4 bg-gray-800 text-white p-3 rounded-md w-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="mt-4 bg-gray-800 text-white p-3 rounded-md w-full hover:bg-gray-700"
                                 >
                                     Create One
                                 </button>
@@ -86,18 +77,7 @@ export const UserBlogsPage = () => {
                         </div>
                     ) : (
                         <div className="flex justify-center">
-                            <ToastContainer
-                                position="top-right"
-                                autoClose={3000}
-                                hideProgressBar={false}
-                                newestOnTop={false}
-                                closeOnClick
-                                rtl={false}
-                                pauseOnFocusLoss
-                                draggable
-                                pauseOnHover
-                                theme="light"
-                            />
+                            <ToastContainer autoClose={3000} />
                             <div>
                                 {userBlog.map((blog) => (
                                     <div key={blog.id} className="mb-4">
@@ -108,49 +88,8 @@ export const UserBlogsPage = () => {
                                             content={blog.content}
                                             publishedDate={blog.publishedAt}
                                             onDelete={(id) => handleDelete(id)}
-                                            onUpdate={() => handleUpdateClick(blog)}
+                                            onUpdate={() => setEditingBlog(blog)} // ✅ Open modal with blog data
                                         />
-                                        {editingBlog?.id === blog.id && (
-                                            <div className="mt-4 p-4 border rounded-lg bg-gray-50">
-                                                <form onSubmit={handleUpdateSubmit}>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="newTitle" className="block text-sm font-medium text-gray-700">Update Title</label>
-                                                        <input
-                                                            type="text"
-                                                            id="newTitle"
-                                                            className="mt-2 p-2 w-full border rounded-md"
-                                                            value={newTitle}
-                                                            onChange={(e) => setNewTitle(e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="newContent" className="block text-sm font-medium text-gray-700">Update Content</label>
-                                                        <textarea
-                                                            id="newContent"
-                                                            rows={4}
-                                                            className="mt-2 p-2 w-full border rounded-md"
-                                                            value={newContent}
-                                                            onChange={(e) => setNewContent(e.target.value)}
-                                                        />
-                                                    </div>
-                                                    <div className="flex justify-end space-x-4">
-                                                        <button
-                                                            type="submit"
-                                                            className="bg-green-500 text-white px-4 py-2 rounded-md"
-                                                        >
-                                                            Save Changes
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                                                            onClick={() => setEditingBlog(null)}
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -158,6 +97,15 @@ export const UserBlogsPage = () => {
                     )}
                 </div>
             </div>
+
+            {/* ✅ Update Blog Modal */}
+            {editingBlog && (
+                <UpdateBlogModal
+                    blog={editingBlog}
+                    onClose={() => setEditingBlog(null)}
+                    onUpdate={handleUpdateSubmit}
+                />
+            )}
         </div>
     );
 };
