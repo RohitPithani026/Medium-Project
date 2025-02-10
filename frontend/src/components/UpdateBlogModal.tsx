@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { TextEditor } from "@/components/TextEditor"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/dialog"

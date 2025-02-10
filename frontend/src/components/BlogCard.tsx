@@ -1,57 +1,75 @@
-import { Link } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { useNavigate } from "react-router-dom"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/avatar"
+import { Button } from "@/components/button"
+import { CalendarIcon, ClockIcon } from "lucide-react"
 
 interface BlogCardProps {
-    authorName: string;
-    title: string;
-    content: string;
-    publishedDate: string;
-    id: number;
+    authorName: string
+    title: string
+    content: string
+    publishedDate: string
+    id: number
 }
 
-export const BlogCard = ({
-    id,
-    authorName,
-    title,
-    content,
-    publishedDate,
-}: BlogCardProps) => {
+export const BlogCard = ({ id, authorName, title, content, publishedDate }: BlogCardProps) => {
+    const navigate = useNavigate()
+    
+    const formattedDate = new Date(publishedDate).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    })
+
     return (
-        <Link to={`/blog/${id}`} className="transition-transform duration-300 hover:scale-105">
-            <div className="p-6 bg-white dark:bg-gray-800 rounded-3xl shadow-lg hover:shadow-xl border border-transparent dark:border-gray-700 w-full max-w-screen-md cursor-pointer mb-6 mt-4">
-                {/* Header: Avatar, Author Name, Date */}
-                <div className="flex items-center space-x-6 pb-6">
-                    <Avatar className="h-14 w-14 dark:border-gray-800 shadow-xl">
-                        <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-                        <AvatarFallback>{authorName[0]}</AvatarFallback>
+        <div className="w-full flex justify-center pt-8">
+            <div className="p-7 bg-white dark:bg-gray-900 rounded-3xl shadow-lg border border-gray-300 dark:border-gray-700 w-full max-w-3xl mb-10 transition-all duration-300 ease-in-out transform group hover:scale-[1.02] hover:shadow-2xl hover:border-primary">
+                
+                {/* Author Info */}
+                <div className="flex items-center space-x-4 mb-6">
+                    <Avatar className="h-14 w-14 border-2 border-primary shadow-md">
+                        <AvatarImage alt={authorName} />
+                        <AvatarFallback className="text-lg font-semibold">{authorName[0]}</AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col space-y-1">
-                        <div className="text-lg font-semibold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300">
-                            {authorName}
-                        </div>
-                        <div className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
-                            <Circle />
-                            <span>{publishedDate}</span>
+                    <div className="flex flex-col">
+                        <span className="text-md font-medium text-gray-900 dark:text-gray-100">{authorName}</span>
+                        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                            <CalendarIcon className="h-4 w-4 opacity-80" />
+                            <span>{formattedDate}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Blog Title */}
-                <div>
-                    <h2 className="text-3xl font-semibold text-gray-900 dark:text-gray-100 hover:text-gray-700 dark:hover:text-gray-300 transition-colors duration-300">
-                        {title}
-                    </h2>
-                    <p className="text-md text-gray-600 dark:text-gray-300 mt-4 line-clamp-3">{content}</p>
+                <h2 className="text-[24px] font-semibold text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-300 leading-snug mb-3">
+                    {title}
+                </h2>
 
-                    <div className="flex items-center justify-between pt-6 text-sm text-gray-500 dark:text-gray-400">
-                        <span>{`${Math.ceil(content.length / 100)} minute(s) read`}</span>
+                {/* Blog Content Preview */}
+                <div
+                    className="text-lg text-gray-700 dark:text-gray-300 mb-5 leading-relaxed line-clamp-4"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                />
+
+                {/* Footer: Read Time & Button */}
+                <div className="flex items-center justify-between pt-5 border-t border-gray-300 dark:border-gray-700">
+                    <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                        <ClockIcon className="h-5 w-5 opacity-80" />
+                        <span>{`${Math.ceil(content.length / 100)} min read`}</span>
                     </div>
+                    <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="group-hover:text-primary transition-all duration-300"
+                        onClick={() => navigate(`/blog/${id}`)}
+                    >
+                        Read more
+                    </Button>
                 </div>
             </div>
-        </Link>
-    );
-};
+        </div>
+    )
+}
 
-export function Circle() {
-    return <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-500"></div>;
+export function Circle() { 
+    return <div className="h-2 w-2 rounded-full bg-gray-300 dark:bg-gray-500"></div>; 
 }

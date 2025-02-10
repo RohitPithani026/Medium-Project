@@ -1,3 +1,4 @@
+import { AppbarSkeleton } from "@/components/AppbarSkeleton";
 import { Appbar } from "../components/Appbar"
 import { BlogCard } from "../components/BlogCard"
 import { BlogSkeleton } from "../components/BlogSkeleton";
@@ -8,7 +9,7 @@ export const Blogs = () => {
 
     if (loading) {
         return <div>
-            <Appbar /> 
+            <AppbarSkeleton />
             <div  className="flex justify-center">
                 <div>
                     <BlogSkeleton />

@@ -1,4 +1,3 @@
-import { Appbar } from "../components/Appbar";
 import { FullBlog } from "../components/FullBlog";
 import { useBlog } from "../hook";
 import { useParams } from "react-router-dom";
@@ -6,6 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { FullBlogSkeleton } from "@/components/FullBlogSkeleton";
 import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
+import { AppbarSkeleton } from "@/components/AppbarSkeleton";
 
 export const Blog = () => {
     const { id } = useParams();
@@ -20,7 +20,7 @@ export const Blog = () => {
     if (loading || !blogg) {
         return (
             <div>
-                <Appbar />
+                <AppbarSkeleton />
                 <div className="h-screen flex flex-col justify-center">
                     <div className="flex justify-center">
                         <FullBlogSkeleton />

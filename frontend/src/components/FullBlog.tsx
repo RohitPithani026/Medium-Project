@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/avatar"
 import { Card, CardContent } from "@/components/card"
 import { Separator } from "@/components/separator"
 import { Clock, Calendar } from "lucide-react"
-
 import { motion, AnimatePresence } from "framer-motion"
 
 export const FullBlog = ({ blog }: { blog: Blog }) => {
@@ -22,7 +21,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
 
     const initials = blog.author.name ? getInitials(blog.author.name) : "A"
 
-    const readingTime = Math.ceil(blog.content.split(" ").length / 200)
+    const readingTime = Math.ceil(blog.content.length / 100) 
 
     return (
         <div className="min-h-screen">
@@ -53,9 +52,9 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                                             <Calendar className="w-5 h-5 mr-2 text-primary" />
                                             <span>{blog.publishedAt}</span>
                                         </div>
-                                        <div className="flex items-center">
+                                        <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                                             <Clock className="w-5 h-5 mr-2 text-primary" />
-                                            <span>{readingTime} min read</span>
+                                            <span>{`${readingTime} minute(s) read`}</span>
                                         </div>
                                     </div>
                                     <motion.div

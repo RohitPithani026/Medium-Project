@@ -4,8 +4,9 @@ import { UserBlogSkeleton } from '../components/UserBlogsSkeleton';
 import { useUserBlogs, useBlogDelete, useBlogUpdate } from "../hook/index";
 import { toast, ToastContainer } from "react-toastify";
 import { UserBlogCard } from "@/components/UserBlogCard";
-import { UpdateBlogModal } from "@/components/UpdateBlogModal"; // ✅ Import modal
+import { UpdateBlogModal } from "@/components/UpdateBlogModal"; 
 import { Link } from "react-router-dom";
+import { AppbarSkeleton } from "@/components/AppbarSkeleton";
 
 export const UserBlogsPage = () => {
     const userId = localStorage.getItem("id");
@@ -50,7 +51,7 @@ export const UserBlogsPage = () => {
     if (loading || !userBlog) {
         return (
             <div>
-                <Appbar />
+                <AppbarSkeleton />
                 <div className="h-screen flex items-center justify-center">
                     <UserBlogSkeleton />
                 </div>

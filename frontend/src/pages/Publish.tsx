@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { Appbar } from "@/components/Appbar"
@@ -9,12 +9,18 @@ import { Input } from "@/components/input"
 import { Card, CardContent } from "@/components/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/tabs"
 import { Loader2 } from "lucide-react"
+import { PublishSkeleton } from "@/components/PublishSkeleton"
 
 export const Publish = () => {
     const [title, setTitle] = useState<string>("")
     const [content, setContent] = useState<string>("")
     const [isPublishing, setIsPublishing] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true) 
     const router = useNavigate()
+
+    useEffect(() => {
+        setTimeout(() => setIsLoading(false), 1000)
+    }, [])
 
     const handlePublish = async () => {
         setIsPublishing(true)
@@ -37,6 +43,10 @@ export const Publish = () => {
     }
 
     const wordCount = content.trim().split(/\s+/).length
+
+    if (isLoading) {
+        return <PublishSkeleton />
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-gray-50 to-blue-50 flex flex-col">
@@ -99,4 +109,3 @@ export const Publish = () => {
         </div>
     )
 }
-
