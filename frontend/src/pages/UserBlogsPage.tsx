@@ -62,7 +62,7 @@ export const UserBlogsPage = () => {
     return (
         <div>
             <Appbar />
-            <div className="pt-12 pb-8 flex flex-col items-center w-full">
+            <div className="pt-8 pb-8 flex flex-col items-center w-full">
                 <div className="w-full px-4 md:px-8">
                     {userBlog.length === 0 ? (
                         <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-md border">
