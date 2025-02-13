@@ -18,10 +18,10 @@ export const UserBlogsPage = () => {
         try {
             const { deleteBlog } = useBlogDelete({ id: id.toString() });
             await deleteBlog();
-            toast.success(`Successfully deleted blog with ID: ${id}`);
+            toast.success(`Successfully deleted the Blog`);
             setUserBlog((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id));
         } catch (error) {
-            toast.error(`Failed to delete blog with ID: ${id}`);
+            toast.error(`Failed to delete blog`);
             console.error(error);
         }
     };
@@ -32,7 +32,7 @@ export const UserBlogsPage = () => {
         try {
             const { updateBlog } = useBlogUpdate({ id: editingBlog.id.toString() });
             await updateBlog(updatedData);
-            toast.success(`Successfully updated blog with ID: ${editingBlog.id}`);
+            toast.success(`Successfully updated the Blog`);
 
             // Update UI
             setUserBlog((prevBlogs) =>
@@ -43,7 +43,7 @@ export const UserBlogsPage = () => {
 
             setEditingBlog(null); // Close modal
         } catch (error) {
-            toast.error(`Failed to update blog with ID: ${editingBlog.id}`);
+            toast.error(`Failed to update blog`);
             console.error(error);
         }
     };
