@@ -4,7 +4,7 @@ import { UserBlogSkeleton } from '../components/UserBlogsSkeleton';
 import { useUserBlogs, useBlogDelete, useBlogUpdate } from "../hook/index";
 import { toast, ToastContainer } from "react-toastify";
 import { UserBlogCard } from "@/components/UserBlogCard";
-import { UpdateBlogModal } from "@/components/UpdateBlogModal"; 
+import { UpdateBlogModal } from "@/components/UpdateBlogModal";
 import { Link } from "react-router-dom";
 import { AppbarSkeleton } from "@/components/AppbarSkeleton";
 
@@ -34,14 +34,13 @@ export const UserBlogsPage = () => {
             await updateBlog(updatedData);
             toast.success(`Successfully updated the Blog`);
 
-            // Update UI
             setUserBlog((prevBlogs) =>
                 prevBlogs.map((blog) =>
                     blog.id === editingBlog.id ? { ...blog, ...updatedData } : blog
                 )
             );
 
-            setEditingBlog(null); // Close modal
+            setEditingBlog(null);
         } catch (error) {
             toast.error(`Failed to update blog`);
             console.error(error);
@@ -79,19 +78,18 @@ export const UserBlogsPage = () => {
                     ) : (
                         <div className="flex justify-center">
                             <ToastContainer autoClose={3000} />
-                            <div>
+                            <div className="flex flex-col items-center w-full px-4 md:px-8 gap-6">
                                 {userBlog.map((blog) => (
-                                    <div key={blog.id} className="mb-4">
-                                        <UserBlogCard
-                                            id={blog.id}
-                                            authorName={blog.author.name || "Anonymous"}
-                                            title={blog.title}
-                                            content={blog.content}
-                                            publishedDate={blog.publishedAt}
-                                            onDelete={(id) => handleDelete(id)}
-                                            onUpdate={() => setEditingBlog(blog)} // ✅ Open modal with blog data
-                                        />
-                                    </div>
+                                    <UserBlogCard
+                                        key={blog.id}
+                                        id={blog.id}
+                                        authorName={blog.author.name || "Anonymous"}
+                                        title={blog.title}
+                                        content={blog.content}
+                                        publishedDate={blog.publishedAt}
+                                        onDelete={(id) => handleDelete(id)}
+                                        onUpdate={() => setEditingBlog(blog)}
+                                    />
                                 ))}
                             </div>
                         </div>
@@ -99,7 +97,6 @@ export const UserBlogsPage = () => {
                 </div>
             </div>
 
-            {/* ✅ Update Blog Modal */}
             {editingBlog && (
                 <UpdateBlogModal
                     blog={editingBlog}
